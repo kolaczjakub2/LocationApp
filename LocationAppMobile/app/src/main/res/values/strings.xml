@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">LocationAppMobile</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="email">Email</string>
+    <string name="passowrd">Password</string>
+    <string name="login">LOGIN</string>
+    <string name="newUser">Not a Member yet? Sign Up here.</string>
 </resources>
