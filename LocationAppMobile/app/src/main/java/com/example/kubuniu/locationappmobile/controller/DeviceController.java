@@ -1,7 +1,10 @@
 package com.example.kubuniu.locationappmobile.controller;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
+import com.example.kubuniu.locationappmobile.activitity.LoginActivity;
+import com.example.kubuniu.locationappmobile.activitity.RegisterActivity;
 import com.example.kubuniu.locationappmobile.data.Device;
 import com.example.kubuniu.locationappmobile.service.DeviceService;
 import com.google.gson.Gson;
@@ -43,6 +46,30 @@ public class DeviceController {
                 } else {
                     if (response.errorBody() != null) {
                         Toast.makeText(context, "User didn't exist",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Device> call, Throwable t) {
+                Toast.makeText(context, "Cannot connect with server",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void register(Device device) {
+        Call<Device> call = deviceService.register(device);
+        call.enqueue(new Callback<Device>() {
+            @Override
+            public void onResponse(Call<Device> call, Response<Device> response) {
+                if (response.isSuccessful()) {
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    context.startActivity(intent);
+                } else {
+                    if (response.errorBody() != null) {
+                        Toast.makeText(context, "User already exist",
                                 Toast.LENGTH_LONG).show();
                     }
                 }

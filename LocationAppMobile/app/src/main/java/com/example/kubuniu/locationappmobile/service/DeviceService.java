@@ -10,4 +10,7 @@ public interface DeviceService {
 
     @POST("/login")
     Call<Device> login(@Body Device loginData);
+
+    @POST("/register")
+    Call<Device> register(@Body Device loginData);
 }
