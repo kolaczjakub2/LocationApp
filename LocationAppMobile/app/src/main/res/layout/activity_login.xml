@@ -71,7 +71,8 @@
                 android:text="@string/login"
                 android:textColor="#009688"
                 android:textSize="17sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:onClick="onLoginButtonClick"/>
 
 
     </LinearLayout>
