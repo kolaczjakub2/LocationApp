@@ -1,11 +1,14 @@
 package com.example.kubuniu.locationappmobile.controller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.widget.Toast;
 import com.example.kubuniu.locationappmobile.activitity.LoginActivity;
-import com.example.kubuniu.locationappmobile.activitity.RegisterActivity;
+import com.example.kubuniu.locationappmobile.config.StringHelper;
 import com.example.kubuniu.locationappmobile.data.Device;
+import com.example.kubuniu.locationappmobile.service.BackgroundService;
 import com.example.kubuniu.locationappmobile.service.DeviceService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,6 +17,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.example.kubuniu.locationappmobile.config.StringHelper.PREFERENCES_NAME;
+import static com.example.kubuniu.locationappmobile.config.StringHelper.PREFERENCES_TEXT_FIELD;
 
 public class DeviceController {
 
@@ -27,7 +33,7 @@ public class DeviceController {
                 .create();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.9:8080")
+                .baseUrl(StringHelper.URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
@@ -42,7 +48,8 @@ public class DeviceController {
             @Override
             public void onResponse(Call<Device> call, Response<Device> response) {
                 if (response.isSuccessful()) {
-
+                    saveContext(response);
+                    context.startService(new Intent(context, BackgroundService.class));
                 } else {
                     if (response.errorBody() != null) {
                         Toast.makeText(context, "User didn't exist",
@@ -57,6 +64,14 @@ public class DeviceController {
                         Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void saveContext(Response<Device> response) {
+        final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor preferencesEditor = preferences.edit();
+        Gson gson = new Gson();
+        preferencesEditor.putString(PREFERENCES_TEXT_FIELD, gson.toJson(response.body()));
+        preferencesEditor.apply();
     }
 
     public void register(Device device) {
