@@ -19,4 +19,10 @@ public class DeviceController {
     Device login(@RequestBody Device device){
         return deviceService.login(device);
     }
+
+    @PostMapping("register")
+    Device register(@RequestBody Device device){
+        return deviceService.register(device);
+    }
+
 }

@@ -19,4 +19,11 @@ public class DeviceService {
         return deviceRepository.findByLoginAndPassword(device.getLogin(), device.getPassword())
                 .orElseThrow(()-> new EntityNotFoundException("User didn't exist"));
     }
+
+    public Device register(final Device device) {
+       if(deviceRepository.findByLogin(device.getLogin()).isPresent()){
+           throw new EntityNotFoundException("User already exist");
+       }
+       return deviceRepository.save(device);
+    }
 }
