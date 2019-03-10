@@ -1,7 +1,22 @@
 <h1>{{ title }}</h1>
 
+<form class="example-form" [formGroup]="form">
+  <mat-form-field class="example-full-width">
+    <input type="text" placeholder="Pick one" aria-label="Number" matInput formControlName="user" [matAutocomplete]="auto">
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</form>
+
 <!-- this creates a google map on the page with the given lat/lng from -->
 <!-- the component as the initial center of the map: -->
 <agm-map [latitude]="lat" [longitude]="lng" [zoom]="15">
-  <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+  <div *ngFor="let location of locations">
+    <agm-marker [latitude]="location.lat" [longitude]="location.lng"></agm-marker>
+  </div>
 </agm-map>
+
+
