@@ -1,13 +1,12 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -24,4 +23,8 @@ public class Device {
     private String login;
 
     private String password;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "device")
+    Set<Location> locations;
 }
