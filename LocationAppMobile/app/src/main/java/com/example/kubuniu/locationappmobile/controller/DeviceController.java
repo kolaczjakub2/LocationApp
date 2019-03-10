@@ -26,8 +26,9 @@ public class DeviceController {
     private final DeviceService deviceService;
     private final Retrofit retrofit;
     private final Context context;
+    private final Activity activity;
 
-    public DeviceController(Context context) {
+    public DeviceController(Context context, Activity activity) {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 .create();
@@ -39,6 +40,7 @@ public class DeviceController {
 
         deviceService = retrofit.create(DeviceService.class);
         this.context = context;
+        this.activity = activity;
     }
 
 

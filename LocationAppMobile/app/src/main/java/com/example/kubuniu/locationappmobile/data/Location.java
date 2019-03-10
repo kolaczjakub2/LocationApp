@@ -1,5 +1,10 @@
 package com.example.kubuniu.locationappmobile.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -8,8 +13,10 @@ public class Location {
     private UUID id;
     private Double lat;
     private Double lng;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime dateTime;
-    private Device device;
 
     public UUID getId() {
         return id;
@@ -41,13 +48,5 @@ public class Location {
 
     public void setDateTime(LocalDateTime localDateTime) {
         this.dateTime = localDateTime;
-    }
-
-    public Device getDevice() {
-        return device;
-    }
-
-    public void setDevice(Device device) {
-        this.device = device;
     }
 }
