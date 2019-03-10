@@ -7,6 +7,8 @@ import com.example.demo.repositories.LocationRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -26,5 +28,12 @@ public class LocationService {
 
         location.setDevice(device);
         return locationRepository.save(location);
+    }
+
+    public List<Location> getLocations(UUID deviceId, LocalDateTime dateFrom, LocalDateTime dateTo) {
+        final Device device = deviceRepository.findById(deviceId)
+                .orElseThrow(() -> new EntityNotFoundException("Device didn't exist"));
+
+        return locationRepository.findByDeviceAndDateTimeAfterAndDateTimeBefore(device, dateFrom, dateTo);
     }
 }
