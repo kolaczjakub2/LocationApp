@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Observable} from "rxjs";
 import {map, startWith} from "rxjs/operators";
+import {Location} from "../../core/model/Location.model";
+import {Device} from "../../core/model/Devices.model";
 
 @Component({
   selector: 'app-dashboard',
@@ -13,8 +15,14 @@ export class DashboardComponent implements OnInit {
   lat: number = 51.678418;
   lng: number = 7.809007;
   locations: Location[] = [];
-  options: string[] = ['One', 'Two', 'Three'];
-  filteredOptions: Observable<string[]>;
+  devices: Device[] = [{
+    id: '1',
+    login: 'Sylwunia'
+  },{
+    id: '2',
+    login: 'Kubuniu'
+  }];
+  filteredDevices: Observable<Device[]>;
   form: FormGroup;
 
 
@@ -33,27 +41,26 @@ export class DashboardComponent implements OnInit {
     pom1.lng = 8.809007;
     this.locations.push(pom, pom1);
 
-    this.filteredOptions = this.form.get('user').valueChanges
+    this.filteredDevices = this.form.get('device').valueChanges
       .pipe(
         startWith(''),
         map(value => this._filter(value))
       );
   }
 
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
+  displayDevice(device?: Device): string | undefined {
+    return device ? device.login : undefined;
+  }
 
-    return this.options.filter(option => option.toLowerCase().includes(filterValue));
+  private _filter(value): Device[] {
+      const filterValue = value.login? value.login.toLowerCase():value.toLowerCase();
+
+      return this.devices.filter(device => device.login.toLowerCase().includes(filterValue));
   }
 
   private initForm(): FormGroup {
     return this.fb.group({
-      user: [null]
+      device: [null]
     })
   }
-}
-
-class Location {
-  lat: number;
-  lng: number;
 }
