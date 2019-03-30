@@ -17,7 +17,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        this.deviceController = new DeviceController(this.getApplicationContext());
+        this.deviceController = new DeviceController(this.getApplicationContext(), this);
     }
 
     public void onRegisterButtonClick(View view) {
@@ -31,13 +31,12 @@ public class RegisterActivity extends AppCompatActivity {
             loginData.setPassword(password);
             deviceController.register(loginData);
         }
-        Toast.makeText(this.getApplicationContext(), "Confirm password is not equal to password",
-                Toast.LENGTH_LONG).show();
+
 
     }
 
     public Boolean validateRegisterData(final String login, final String password, final String confirmPassword) {
-        if (password.length() != 8) {
+        if (password.length() < 8) {
             Toast.makeText(this.getApplicationContext(), "Password is too short",
                     Toast.LENGTH_LONG).show();
             return false;
@@ -48,7 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         }
 
-        if (login.length() != 8) {
+        if (login.length() < 8) {
             Toast.makeText(this.getApplicationContext(), "Login is too short",
                     Toast.LENGTH_LONG).show();
             return false;

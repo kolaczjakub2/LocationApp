@@ -7,10 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Handler;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
+import android.widget.Toast;
 import com.example.kubuniu.locationappmobile.controller.LocationController;
 import com.example.kubuniu.locationappmobile.data.Device;
 import com.example.kubuniu.locationappmobile.data.Location;
@@ -23,10 +25,31 @@ import static com.example.kubuniu.locationappmobile.config.StringHelper.PREFEREN
 
 public class BackgroundService extends Service {
 
-    private static Runnable runnable = null;
     private Context context = this;
-    private Handler handler = null;
     private LocationController locationController;
+    LocationListener locationListenerGPS = new LocationListener() {
+        @Override
+        public void onLocationChanged(android.location.Location location) {
+            sendLocation(location);
+            System.out.println("ZZZ");
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+    private LocationManager mLocationManager;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -35,18 +58,12 @@ public class BackgroundService extends Service {
 
     @Override
     public void onCreate() {
+        Toast.makeText(this, "Invoke background service onCreate method.", Toast.LENGTH_LONG).show();
         locationController = new LocationController(this);
-        handler = new Handler();
-//        runnable = () -> {
-//            sendLocation();
-//            handler.postDelayed(runnable, 10000);
-//        };
+        System.out.println("ZZZ");
 
-        handler.postDelayed(runnable, 15000);
-    }
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-    private void sendLocation() {
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -57,15 +74,17 @@ public class BackgroundService extends Service {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        android.location.Location lastKnownLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListenerGPS);
 
+    }
+
+    private void sendLocation(android.location.Location aLocation) {
         Location location = new Location();
-        location.setLat(lastKnownLocation.getLatitude());
-        location.setLng(lastKnownLocation.getLongitude());
+        location.setLat(aLocation.getLatitude());
+        location.setLng(aLocation.getLongitude());
         location.setDateTime(LocalDateTime.now());
-        location.setDevice(getDevice());
 
-        locationController.sendLocation(location);
+        locationController.sendLocation(location, getDevice().getId());
     }
 
     private Device getDevice() {
@@ -74,5 +93,4 @@ public class BackgroundService extends Service {
         Gson gson = new Gson();
         return gson.fromJson(deviceAsString, Device.class);
     }
-
 }
