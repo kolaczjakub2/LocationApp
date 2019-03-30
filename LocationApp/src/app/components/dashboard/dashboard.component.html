@@ -2,7 +2,7 @@
 
 <form class="example-form" [formGroup]="form">
   <mat-form-field class="example-full-width">
-    <input type="text" placeholder="Pick one" aria-label="Number" matInput formControlName="device" [matAutocomplete]="auto">
+    <input type="text" placeholder="Pick your device" aria-label="Number" matInput formControlName="device" [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayDevice">
       <mat-option *ngFor="let device of filteredDevices | async" [value]="device">
         {{device.login}}
