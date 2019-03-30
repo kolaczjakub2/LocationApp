@@ -51,16 +51,20 @@ export class DashboardComponent implements OnInit {
   displayDevice(device?: Device): string | undefined {
     return device ? device.login : undefined;
   }
+  onClickButton(){
+    console.log(this.form.get('dates').value);
+  }
 
   private _filter(value): Device[] {
-      const filterValue = value.login? value.login.toLowerCase():value.toLowerCase();
+    const filterValue = value.login ? value.login.toLowerCase() : value.toLowerCase();
 
-      return this.devices.filter(device => device.login.toLowerCase().includes(filterValue));
+    return this.devices.filter(device => device.login.toLowerCase().includes(filterValue));
   }
 
   private initForm(): FormGroup {
     return this.fb.group({
-      device: [null]
+      device: [null],
+      dates: [null]
     })
   }
 }

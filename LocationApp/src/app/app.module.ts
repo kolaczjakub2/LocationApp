@@ -8,6 +8,7 @@ import {AgmCoreModule} from '@agm/core';
 import {AngularMaterialModule} from "./AngularMaterialModule";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ReactiveFormsModule} from "@angular/forms";
+import {OwlDateTimeModule, OwlNativeDateTimeModule} from "ng-pick-datetime";
 
 const config = {
   apiKey: 'AIzaSyC1w1ay-X3fWHeLPnLQ98YFdplPzNQ7qkY',
@@ -25,7 +26,9 @@ const config = {
     AgmCoreModule.forRoot(config),
     AngularMaterialModule,
     BrowserAnimationsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

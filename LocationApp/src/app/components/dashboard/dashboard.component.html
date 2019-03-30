@@ -2,13 +2,23 @@
 
 <form class="example-form" [formGroup]="form">
   <mat-form-field class="example-full-width">
-    <input type="text" placeholder="Pick your device" aria-label="Number" matInput formControlName="device" [matAutocomplete]="auto">
+    <input type="text" placeholder="Pick your device" aria-label="Number" matInput formControlName="device"
+           [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayDevice">
       <mat-option *ngFor="let device of filteredDevices | async" [value]="device">
         {{device.login}}
       </mat-option>
     </mat-autocomplete>
   </mat-form-field>
+  <mat-form-field class="example-full-width" style="width: 100%;">
+    <input matInput placeholder="Date Time Range:"
+            formControlName="dates"
+           [selectMode]="'range'"
+           [owlDateTimeTrigger]="dtRange1" [owlDateTime]="dtRange1">
+    <owl-date-time [pickerMode]="'dialog'" #dtRange1></owl-date-time>
+  </mat-form-field>
+
+  <button (click)="onClickButton()">Click me</button>
 </form>
 
 <!-- this creates a google map on the page with the given lat/lng from -->
