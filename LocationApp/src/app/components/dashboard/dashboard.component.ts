@@ -1,9 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {Observable} from "rxjs";
-import {map, startWith} from "rxjs/operators";
-import {Location} from "../../core/model/Location.model";
-import {Device} from "../../core/model/Devices.model";
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {Observable, Subscription} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
+import {Location} from '../../core/model/Location.model';
+import {Device} from '../../core/model/Devices.model';
+import {DeviceService} from '../../core/service/device.service';
+import {HttpParams} from '@angular/common/http';
+import {LocationService} from '../../core/service/location.service';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,36 +15,33 @@ import {Device} from "../../core/model/Devices.model";
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  title: string = 'My first AGM project';
   lat: number = 51.678418;
   lng: number = 7.809007;
   locations: Location[] = [];
-  devices: Device[] = [{
-    id: '1',
-    login: 'Sylwunia'
-  },{
-    id: '2',
-    login: 'Kubuniu'
-  }];
+  devices: Device[] = [];
   filteredDevices: Observable<Device[]>;
   form: FormGroup;
 
+  private readonly subscription = new Subscription();
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+              private deviceService: DeviceService,
+              private locationService: LocationService,
+              private datePipe: DatePipe) {
 
   }
 
   ngOnInit() {
     this.form = this.initForm();
-    let pom: Location = new Location();
-    pom.lat = 51.678418;
-    pom.lng = 7.809007;
+    this.subscription.add(
+      this.deviceService.getAll().subscribe(response => {
+        this.devices = response;
+        this.getFilteredDevice();
+      })
+    );
+  }
 
-    let pom1: Location = new Location();
-    pom1.lat = 52.678418;
-    pom1.lng = 8.809007;
-    this.locations.push(pom, pom1);
-
+  private getFilteredDevice() {
     this.filteredDevices = this.form.get('device').valueChanges
       .pipe(
         startWith(''),
@@ -51,8 +52,19 @@ export class DashboardComponent implements OnInit {
   displayDevice(device?: Device): string | undefined {
     return device ? device.login : undefined;
   }
-  onClickButton(){
-    console.log(this.form.get('dates').value);
+
+  onClickButton() {
+    const params = new HttpParams()
+      .set('device', this.form.get('device').value.id)
+      .set('dateFrom', this.datePipe.transform(this.form.get('dates').value[0], 'yyyy-MM-dd HH:mm'))
+      .set('dateTo', this.datePipe.transform(this.form.get('dates').value[1], 'yyyy-MM-dd HH:mm'));
+
+    this.subscription.add(
+      this.locationService.getLocation(params).subscribe(response => {
+          this.locations = response;
+        }
+      )
+    );
   }
 
   private _filter(value): Device[] {
@@ -65,6 +77,6 @@ export class DashboardComponent implements OnInit {
     return this.fb.group({
       device: [null],
       dates: [null]
-    })
+    });
   }
 }
